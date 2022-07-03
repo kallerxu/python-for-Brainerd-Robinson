@@ -1,0 +1,35 @@
+#环境变量
+import pandas as pd 
+from pandas import DataFrame            
+import csv
+import numpy as np
+
+#读取csv为数组
+path1=r"C:\Users\xuhai\Downloads\BR.csv"
+path2=r"C:\Users\xuhai\Downloads\BR_1.csv"
+with open(path1,'r',encoding='gbk',errors='ignore') as f:   #读取csv扔掉首行后保留首列
+	reader=csv.reader(_.replace('\x00','')for _ in f)
+	next (reader)
+	a0=pd.DataFrame(reader,dtype=str)
+a0                                                     
+a0=np.array(a0)                                #转为数组
+a1=a0[:,0]                                     #存储csv表头
+a0=np.delete(a0,0,axis=1)                      #将首列删除
+#a=np.loadtxt(path1,delimiter=",",skiprows=1)  #跳过首行读取csv为数组
+a=a0.astype(int)                               #转换数据为int
+b=a/a.sum(axis=1)[:,None]                      #计算每个Pik值
+i=(len(b))                                     #获取BR矩阵行列数,获取变换行数j=sum(i) 
+c=[]                                           #新建空矩阵算pik-pjk
+for k in range(len(b)):
+	xtemp=b[k]
+	for l in range(len(b)):
+		ytemp=b[l,:]
+		ztemp=abs(xtemp-ytemp)
+		c=np.append(c,ztemp)
+		d=c.reshape(-1,len(b[0]))
+		e=1-d.sum(axis=1)/2                #计算BR值
+		e.resize((i,i))                    #将一维数组转为二维数组	
+np.savetxt(path2,e,delimiter=',')          #存储在路径2中
+df=pd.read_csv(path2,header=None,names=a1) #重新打开路径2并写入表头
+df.to_csv(path2,index=False)               #再次存储
+print ('finish')
